@@ -36,6 +36,7 @@ var products = [
     os: "Windows",
   },
 ];
+var itemlist = [];
 var html = `<table style="margin-top:90px;border-collapse: collapse;
 width: 40%;
 border: 1px solid #ddd;
@@ -47,10 +48,15 @@ font-size: 18px;" id="mytab"><tr><th>ID</th>
     <th>Brand</th>
     <th>Operating System</th>
     <th>Remove</th></tr>`;
+var brand =
+  new Set(); /*creating a new set because we want unique values with set function */
+var os =
+  new Set(); /*creating a new set because we want unique values with set function */
 
 display = () => {
+    var row =""
   products.forEach((element) => {
-    html += `<tr><td>${element.id}</td>
+    row += `<tr><td>${element.id}</td>
         <td>${element.name}</td>
         <td>${element.brand}</td>
         <td>${element.os}</td>
@@ -59,8 +65,20 @@ display = () => {
         
         
         </tr>`;
+    brand.add(element.brand);
+    os.add(element.os);
   });
-  $("#output").append(html + "</table>");
+  $("#output").html(html+row + "</table>");
+  let b_item = `<option value="">-Select Brand-</option>`;
+  let o_item = `  <option value="">-Select os-</option>`;
+  brand.forEach((element) => {
+    b_item += `<option>${element}</option>`;
+  });
+  os.forEach((element) => {
+    o_item += `<option>${element}</option>`;
+  });
+  $("#brand").html(b_item);
+  $("#osb").html(o_item);
 };
 
 $(document).ready(function () {
@@ -69,18 +87,73 @@ $(document).ready(function () {
     var id = this.id;
     $(`#${id}`).parents("tr").hide();
   });
-  $("#myinput").on("keyup",function () {
+  $("#myinput").on("keyup", function () {
     search();
   });
+  $("#brand").on("change",function(){
+      sortitems();
+
+  })
+  $("#osb").on("change",function(){
+      sortitems()
+  })
 });
 function search() {
-    
-    
-          var value = $("#myinput").val().toLowerCase();
-          $("#mytab tr").filter(function() {
-            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            console.log("gfhtgfh")
-          }); 
-        
-      
+  var value = $("#myinput").val().toLowerCase();
+  $("#mytab tr").filter(function () {
+    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+    console.log("gfhtgfh");
+  });
+}
+function sortitems() {
+  var brand = $("#brand").val();
+  var os = $("#osb").val();
+  var flag = 0;
+  if (brand != "" && os != "") {
+    itemlist = [];
+    products.forEach((element) => {
+      if (element.os == os && element.brand == brand) {
+        itemlist.push(element);
+        display1();
+        flag = 1;
+      }
+    });
+    if (flag == 0) {
+      itemlist = [];
+      display1();
+    }
+  } else if (os != "" && brand == "") {
+    itemlist = [];
+    products.forEach((element) => {
+      if (element.os == os) {
+        itemlist.push(element);
+        display1();
+      }
+    });
+  } else if (brand != "" && os == "") {
+    itemlist = [];
+    products.forEach((element) => {
+      if (element.brand == brand) {
+        itemlist.push(element);
+        display1();
+      }
+    });
+  } else {
+    itemlist = [];
+    display1();
+  }
+}
+function display1() {
+  var html1 = "";
+  itemlist.forEach((element) => {
+    html1 += `<tr>
+        <td>${element.id}</td>
+        <td>${element.name}</td>
+        <td>${element.brand}</td>
+        <td>${element.os}</td>
+        <td class="rem" style="text-decoration:underline" id=${element.id}>X</td>
+        </tr>`;
+  });
+  $("#output").empty();
+  $("#output").html(html + html1 + "</table>");
 }
