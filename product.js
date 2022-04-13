@@ -36,15 +36,21 @@ var products = [
     os: "Windows",
   },
 ];
-var html=`<table><tr><th>ID</th>
+var html = `<table style="margin-top:90px;border-collapse: collapse;
+width: 40%;
+border: 1px solid #ddd;
+font-size: 18px;
+width: 40%;
+border: 1px solid #ddd;
+font-size: 18px;" id="mytab"><tr><th>ID</th>
     <th>Name</th>
     <th>Brand</th>
     <th>Operating System</th>
     <th>Remove</th></tr>`;
 
-display=()=>{
-   products.forEach((element)=>{
-        html+= `<tr><td>${element.id}</td>
+display = () => {
+  products.forEach((element) => {
+    html += `<tr><td>${element.id}</td>
         <td>${element.name}</td>
         <td>${element.brand}</td>
         <td>${element.os}</td>
@@ -52,17 +58,29 @@ display=()=>{
         
         
         
-        </tr>`
+        </tr>`;
+  });
+  $("#output").append(html + "</table>");
+};
 
-
-    });$("#output").append(html+"</table>")
+$(document).ready(function () {
+  display();
+  $(".rem").click(function () {
+    var id = this.id;
+    $(`#${id}`).parents("tr").hide();
+  });
+  $("#myinput").on("keyup",function () {
+    search();
+  });
+});
+function search() {
+    
+    
+          var value = $("#myinput").val().toLowerCase();
+          $("#mytab tr").filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            console.log("gfhtgfh")
+          }); 
+        
+      
 }
-
-
-$(document).ready(function(){
-    display();
-    $(".rem").click(function(){
-        var id=this.id
-        $(`#${id}`).parents("tr").hide() 
-    })
-})
